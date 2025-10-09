@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProConnect - Bill</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>ProConnect</h1>
+  <nav>
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="services.html" class="nav-btn">Services</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </nav>
+</header>
+
+<section>
+  <div class="bill" id="billDetails"></div>
+</section>
+
+<script>
+const user = JSON.parse(localStorage.getItem('currentUser'));
+const selected = JSON.parse(localStorage.getItem('selectedServices'));
+
+if(!user){
+  alert("You must login first!");
+  window.location.href = "login.html";
+}
+
+if(!selected || selected.length === 0){
+  alert("No services selected!");
+  window.location.href = "services.html";
+}
+
+const professionals = [
+  { name: "Ravi Kumar", service: "Electrician", price: 500 },
+  { name: "Sneha Sharma", service: "Home Cleaning", price: 800 },
+  { name: "Arjun Patel", service: "Plumber", price: 600 },
+  { name: "Priya Mehta", service: "Beautician", price: 1000 },
+  { name: "Rahul Verma", service: "Carpenter", price: 700 },
+  { name: "Manoj Singh", service: "Painter", price: 1200 }
+];
+
+let totalPrice = 0;
+let billHTML = `
+<h2>Hire Bill</h2>
+<p><strong>User:</strong> ${user.name}</p>
+<p><strong>Phone:</strong> ${user.phone}</p>
+<p><strong>Address:</strong> ${user.address}</p>
+<hr>
+`;
+
+selected.forEach(index => {
+  const pro = professionals[index];
+  const gst = pro.price * 0.18;
+  totalPrice += pro.price + gst;
+
+  billHTML += `
+    <p><strong>Professional:</strong> ${pro.name}</p>
+    <p>Service: ${pro.service}</p>
+    <p>Base Price: ₹${pro.price}</p>
+    <p>GST (18%): ₹${gst.toFixed(2)}</p>
+    <hr>
+  `;
+});
+
+// Delivery charges
+const distanceKm = 400; // Example distance
+let delivery = 300;
+let deliveryMsg = "";
+
+if(distanceKm <= 500){
+  delivery = 0;
+  deliveryMsg = "<p style='color:green; font-weight:bold;'>Free delivery applied!</p>";
+}
+totalPrice += delivery;
+
+billHTML += `<p>Delivery Charges: ₹${delivery}</p>${deliveryMsg}<hr>`;
+billHTML += `<h3>Total Payable: ₹${totalPrice.toFixed(2)}</h3>`;
+
+document.getElementById('billDetails').innerHTML = billHTML;
+</script>
+</body>
+</html>
