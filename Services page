@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProConnect - Services</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+  <h1>ProConnect</h1>
+  <nav>
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="services.html" class="nav-btn">Services</a>
+    <a href="login.html" class="nav-btn">Login</a>
+  </nav>
+</header>
+
+<section>
+  <h2 style="text-align:center;color:#0077cc;">Available Professionals</h2>
+  <div class="grid" id="professionalsGrid"></div>
+  <div style="text-align:center; margin-top:20px;">
+    <button class="btn" onclick="proceedToBill()">Hire Selected Services</button>
+  </div>
+</section>
+
+<script>
+// Create 50 sample professionals
+const professionals = [];
+
+for(let i=1; i<=50; i++){
+  professionals.push({
+    name: `Professional ${i}`,
+    service: `Service ${i}`,
+    price: Math.floor(Math.random()*1000)+200, // price between 200-1200
+    img: `https://picsum.photos/seed/pro${i}/250/180` // random placeholder image
+  });
+}
+
+const grid = document.getElementById('professionalsGrid');
+
+professionals.forEach((pro, index) => {
+  const card = document.createElement('div');
+  card.className = "card";
+  card.innerHTML = `
+    <img src="${pro.img}" alt="${pro.service}">
+    <h3>${pro.name}</h3>
+    <p>Service: ${pro.service}</p>
+    <p>Price: ₹${pro.price}</p>
+    <input type="checkbox" id="service${index}" value="${index}"> Select Service
+  `;
+  grid.appendChild(card);
+});
+
+function proceedToBill() {
+  const selected = [];
+  professionals.forEach((_, index) => {
+    if(document.getElementById(`service${index}`).checked) {
+      selected.push(index);
+    }
+  });
+
+  if(selected.length === 0){
+    alert("Please select at least one service!");
+    return;
+  }
+
+  localStorage.setItem('selectedServices', JSON.stringify(selected));
+  window.location.href = "bill.html";
+}
+</script>
+</body>
+</html>
